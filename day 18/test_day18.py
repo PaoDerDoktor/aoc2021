@@ -163,6 +163,73 @@ def test_part1_aoc_official_example():
         node.reduce()
         print(node)
         assert node == list_to_tree(load('[[[[7,0],[7,7]],[[7,7],[7,8]]],[[[7,7],[8,8]],[[7,7],[8,7]]]]'))
+        
+        print("step 4")
+        nodeToAdd = list_to_tree(numList.pop(0))
+        assert nodeToAdd == list_to_tree(load('[7,[5,[[3,8],[1,4]]]]'))
+        node = list_to_tree(load(f"[{repr(node)}, {repr(nodeToAdd)}]"))
+        print(node)
+        node.reduce()
+        print(node)
+        assert node == list_to_tree(load('[[[[7,7],[7,8]],[[9,5],[8,7]]],[[[6,8],[0,8]],[[9,9],[9,0]]]]'))
+        
+        print("step 5")
+        nodeToAdd = list_to_tree(numList.pop(0))
+        assert nodeToAdd == list_to_tree(load('[[2,[2,2]],[8,[8,1]]]'))
+        node = list_to_tree(load(f"[{repr(node)}, {repr(nodeToAdd)}]"))
+        print(node)
+        node.reduce()
+        print(node)
+        assert node == list_to_tree(load('[[[[6,6],[6,6]],[[6,0],[6,7]]],[[[7,7],[8,9]],[8,[8,1]]]]'))
+        
+        print("step 6")
+        nodeToAdd = list_to_tree(numList.pop(0))
+        assert nodeToAdd == list_to_tree(load('[2,9]'))
+        node = list_to_tree(load(f"[{repr(node)}, {repr(nodeToAdd)}]"))
+        print(node)
+        node.reduce()
+        print(node)
+        assert node == list_to_tree(load('[[[[6,6],[7,7]],[[0,7],[7,7]]],[[[5,5],[5,6]],9]]'))
+        
+        print("step 7")
+        nodeToAdd = list_to_tree(numList.pop(0))
+        assert nodeToAdd == list_to_tree(load('[1,[[[9,3],9],[[9,0],[0,7]]]]'))
+        node = list_to_tree(load(f"[{repr(node)}, {repr(nodeToAdd)}]"))
+        print(node)
+        node.reduce()
+        print(node)
+        assert node == list_to_tree(load('[[[[7,8],[6,7]],[[6,8],[0,8]]],[[[7,7],[5,0]],[[5,5],[5,6]]]]'))
+        
+        print("step 8")
+        nodeToAdd = list_to_tree(numList.pop(0))
+        assert nodeToAdd == list_to_tree(load('[[[5,[7,4]],7],1]'))
+        node = list_to_tree(load(f"[{repr(node)}, {repr(nodeToAdd)}]"))
+        print(node)
+        node.reduce()
+        print(node)
+        assert node == list_to_tree(load('[[[[7,7],[7,7]],[[8,7],[8,7]]],[[[7,0],[7,7]],9]]'))
+        
+        print("step 9")
+        nodeToAdd = list_to_tree(numList.pop(0))
+        assert nodeToAdd == list_to_tree(load('[[[[4,2],2],6],[8,7]]'))
+        node = list_to_tree(load(f"[{repr(node)}, {repr(nodeToAdd)}]"))
+        print(node)
+        node.reduce()
+        print(node)
+        assert node == list_to_tree(load('[[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]]'))
+
+def test_part1_aoc_official_example_2():
+    with open("day 18/test2.txt", 'r') as inFile:
+        numList = [load(_.strip()) for _ in inFile.readlines()]
+        
+        node: BinNode = list_to_tree(numList.pop(0))
+        node.reduce()
+        while len(numList) > 0:
+            node = list_to_tree(load(f"[{repr(node)}, {repr(numList.pop(0))}]"))
+            node.reduce()
+        
+        print(node)
+        assert node.get_magnitude() == 4140
 
 def test_addition():
     numList = [load(_) for _ in ['[[[[4,3],4],4],[7,[[8,4],9]]]', '[1,1]']]

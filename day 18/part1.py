@@ -39,7 +39,7 @@ class BinNode:
             isLeftAdded: bool = False
             isRightAdded: bool = False
             while not currentNode == None:
-                if currentNode.left != previousNode and not isLeftAdded:
+                if not currentNode.left is previousNode and not isLeftAdded:
                     if type(currentNode.left) == int:
                         currentNode.left += left # type: ignore --- Again, pylance not checking conditions :/
                     else:
@@ -48,7 +48,7 @@ class BinNode:
                             nextNode = nextNode.right
                         nextNode.right += left # type: ignore --- We know nextNode.right is an int because of the while just before
                     isLeftAdded = True
-                if currentNode.right != previousNode and not isRightAdded:
+                if not currentNode.right is previousNode and not isRightAdded:
                     if type(currentNode.right) == int:
                         currentNode.right += right # type: ignore --- Again, pylance not checking conditions :/
                     else:
@@ -59,9 +59,9 @@ class BinNode:
                     isRightAdded = True
                 previousNode = currentNode
                 currentNode = currentNode.prev
-            if self.prev.left == self:  # type: ignore --- avoiding None conflict
+            if self.prev.left is self:  # type: ignore --- avoiding None conflict
                 self.prev.left = 0  # type: ignore --- wtf pylance
-            if self.prev.right == self: # type: ignore --- avoiding None conflict
+            if self.prev.right is self: # type: ignore --- avoiding None conflict
                 self.prev.right = 0 # type: ignore --- wtf pylance
             return True
         return False
@@ -76,17 +76,20 @@ class BinNode:
         return False
 
     def split(self) -> bool:
-        path = [self]
-        while len(path) > 0:
-            currentNode = path.pop()
-            if type(currentNode.left) == int and currentNode.left >= 10: # type: ignore --- PYLANCE.....
-                currentNode.left = BinNode(floor(currentNode.left/2), ceil(currentNode.left/2), currentNode.depth+1, currentNode) # type: ignore --- I really need to understand how `|` work
-                return True
-            if type(currentNode.right) == int and currentNode.right >= 10: # type: ignore --- PYLANCE.....
-                currentNode.right = BinNode(floor(currentNode.right/2), ceil(currentNode.right/2), currentNode.depth+1, currentNode) # type: ignore --- I really need to understand how `|` work
-                return True
-            path += [_ for _ in (currentNode.right, currentNode.left) if type(_) != int]
-        return False
+        didSplit: bool = False
+        if type(self.left) != int:
+            didSplit = self.left.split()  # type: ignore --- PYLANCE......
+        if type(self.left) == int and self.left >= 10: # type: ignore --- ...
+            self.left = BinNode(floor(self.left/2), ceil(self.left/2), self.depth+1, self) # type: ignore --- I really need to understand how `|` works
+            return True
+        
+        if type(self.right) != int and not didSplit:
+            didSplit = self.right.split() # type: ignore --- Pylance at it YET AGAIN
+        if type(self.right) == int and self.right >= 10 and not didSplit: # type: ignore --- ...
+            self.right = BinNode(floor(self.right/2), ceil(self.right/2), self.depth+1, self) # type: ignore --- I really need to understand how `|` works
+            return True
+            
+        return didSplit
     
     def reduce(self):
         didSomething: bool = True
@@ -106,9 +109,6 @@ class BinNode:
             return 3*self.left + 2*self.right # type: ignore --- pylance
         else:
             return 3*self.left.get_magnitude() + 2*self.right.get_magnitude()
-            
-        
-    
     
 def load(numberStr: str):
     return eval(numberStr)
@@ -121,12 +121,11 @@ def day18_part1_main() -> int:
         numList = [load(_.strip()) for _ in inFile.readlines()]
         
         print("first print =",numList)
-        node: BinNode = list_to_tree(numList.pop())
+        node: BinNode = list_to_tree(numList.pop(0))
         node.reduce()
         while len(numList) > 0:
             node = list_to_tree(load(f"[{repr(node)}, {repr(numList.pop(0))}]"))
             node.reduce()
-            
         return node.get_magnitude()
         
         
