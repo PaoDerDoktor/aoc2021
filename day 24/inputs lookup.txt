@@ -1,0 +1,20 @@
+operation  | -> |  w  |     x    |      y    |                  z                  | 
+------------------------------------------------------------------------------------
+inp w         ->   w                 
+mul x 0       ->             0
+add x z       ->             z
+mod x 26      ->            z%26
+div z 1   [A] ->          (z%26)/A
+add x 10  [B] ->         (z%26)/A+B
+eql x w       ->           0 || 1
+eql x 0       ->           1 || 0
+mul y 0       ->                         0
+add y 25      ->                        25
+mul y x       ->                      25 || 0
+add y 1       ->                      26 || 1
+mul z y       ->                                             26z || z
+mul y 0       ->                          0
+add y w       ->                          w
+add y 12  [C] ->                         w+C
+mul y x       ->                     w+C || 0
+add z y       ->                                  26z+w+C || 26z || z+w+C || z
